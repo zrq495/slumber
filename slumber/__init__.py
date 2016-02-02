@@ -137,6 +137,8 @@ class Resource(ResourceAttributesMixin, object):
     def _process_response(self, resp):
         if 200 <= resp.status_code <= 299:
             decoded = self._try_to_serialize_response(resp)
+        elif 400 <= resp.status_code <= 499:
+            decoded =  self._try_to_serialize_response(resp)
         else:
             # @@@ We should probably do some sort of error here? (Is this even possible?)
             decoded = None

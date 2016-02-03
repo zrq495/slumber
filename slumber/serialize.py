@@ -36,12 +36,12 @@ class BaseSerializer(object):
 class JsonSerializer(BaseSerializer):
 
     content_types = [
-                        "application/json",
-                        "application/x-javascript",
-                        "text/javascript",
-                        "text/x-javascript",
-                        "text/x-json",
-                    ]
+        "application/json",
+        "application/x-javascript",
+        "text/javascript",
+        "text/x-javascript",
+        "text/x-json",
+    ]
     key = "json"
 
     def loads(self, data):
@@ -70,10 +70,12 @@ class Serializer(object):
             default = "json" if _SERIALIZERS["json"] else "yaml"
 
         if serializers is None:
-            serializers = [x() for x in [JsonSerializer, YamlSerializer] if _SERIALIZERS[x.key]]
+            serializers = [x() for x in [JsonSerializer, YamlSerializer]
+                           if _SERIALIZERS[x.key]]
 
         if not serializers:
-            raise exceptions.SerializerNoAvailable("There are no Available Serializers.")
+            raise exceptions.SerializerNoAvailable(
+                "There are no Available Serializers.")
 
         self.serializers = {}
 
@@ -86,15 +88,17 @@ class Serializer(object):
         if name is None and content_type is None:
             return self.serializers[self.default]
         elif name is not None and content_type is None:
-            if not name in self.serializers:
-                raise exceptions.SerializerNotAvailable("%s is not an available serializer" % name)
+            if name not in self.serializers:
+                raise exceptions.SerializerNotAvailable(
+                    "%s is not an available serializer" % name)
             return self.serializers[name]
         else:
             for x in self.serializers.values():
                 for ctype in x.content_types:
                     if content_type == ctype:
                         return x
-            raise exceptions.SerializerNotAvailable("%s is not an available serializer" % content_type)
+            raise exceptions.SerializerNotAvailable(
+                "%s is not an available serializer" % content_type)
 
     def loads(self, data, format=None):
         s = self.get_serializer(format)

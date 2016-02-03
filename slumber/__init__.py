@@ -1,13 +1,13 @@
 import requests
 
-try:
-    from urllib.parse import urlparse, urlsplit, urlunsplit
-except ImportError:
-    from urlparse import urlparse, urlsplit, urlunsplit
+# try:
+#     from urllib.parse import urlparse, urlsplit, urlunsplit
+# except ImportError:
+#     from urlparse import urlparse, urlsplit, urlunsplit
 
 from . import exceptions
 from .serialize import Serializer
-from .utils import url_join, iterator, copy_kwargs
+from .utils import url_join, copy_kwargs
 
 __all__ = ["Resource", "API"]
 
@@ -94,7 +94,9 @@ class Resource(ResourceAttributesMixin, object):
                 headers["content-type"] = serializer.get_content_type()
                 data = serializer.dumps(data)
 
-        resp = self._store["session"].request(method, url, data=data, params=params, files=files, headers=headers)
+        resp = self._store["session"].request(method, url, data=data,
+                                              params=params, files=files,
+                                              headers=headers)
 
         # if 400 <= resp.status_code <= 499:
         #     exception_class = exceptions.HttpNotFoundError if resp.status_code == 404 else exceptions.HttpClientError

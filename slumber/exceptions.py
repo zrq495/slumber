@@ -1,4 +1,4 @@
-from .utils import url_join, iterator
+from .utils import iterator
 
 
 class SlumberBaseException(Exception):

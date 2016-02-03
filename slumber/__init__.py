@@ -1,13 +1,13 @@
 import requests
 
-try:
-    from urllib.parse import urlparse, urlsplit, urlunsplit
-except ImportError:
-    from urlparse import urlparse, urlsplit, urlunsplit
+# try:
+#     from urllib.parse import urlparse, urlsplit, urlunsplit
+# except ImportError:
+#     from urlparse import urlparse, urlsplit, urlunsplit
 
 from . import exceptions
 from .serialize import Serializer
-from .utils import url_join, iterator, copy_kwargs
+from .utils import url_join, copy_kwargs
 
 __all__ = ["Resource", "API"]
 
@@ -94,7 +94,9 @@ class Resource(ResourceAttributesMixin, object):
             if data is not None:
                 data = serializer.dumps(data)
 
-        resp = self._store["session"].request(method, url, data=data, params=params, files=files, headers=headers)
+        resp = self._store["session"].request(method, url, data=data,
+                                              params=params, files=files,
+                                              headers=headers)
 
         # if 400 <= resp.status_code <= 499:
         #     exception_class = exceptions.HttpNotFoundError if resp.status_code == 404 else exceptions.HttpClientError
@@ -142,7 +144,7 @@ class Resource(ResourceAttributesMixin, object):
         elif 400 <= resp.status_code <= 499:
             return self._try_to_serialize_response(resp)
         else:
-            return  # @@@ We should probably do some sort of error here? (Is this even possible?)
+            return  # @@@ We should probably do some sort of error here?
 
     def url(self):
         url = self._store["base_url"]
@@ -195,7 +197,8 @@ class API(ResourceAttributesMixin, object):
 
     resource_class = Resource
 
-    def __init__(self, base_url=None, auth=None, format=None, append_slash=True, session=None, serializer=None):
+    def __init__(self, base_url=None, auth=None, format=None,
+                 append_slash=True, session=None, serializer=None):
         if serializer is None:
             serializer = Serializer(default=format)
 

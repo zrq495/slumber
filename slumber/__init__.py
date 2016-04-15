@@ -34,9 +34,13 @@ class ResourceAttributesMixin(object):
             raise AttributeError(item)
 
         kwargs = copy_kwargs(self._store)
-        kwargs.update({"base_url": url_join(self._store["base_url"], item)})
-
-        return self._get_resource(**kwargs)
+        # if item in method list return resource
+        if item not in set(['get', 'head', 'options', 'post', 'put', 'delete']):
+            kwargs.update({"base_url": url_join(self._store["base_url"], item)})
+            return self._get_resource(**kwargs)
+        else:
+            resource = self._get_resource(**kwargs)
+            return getattr(resource, item)
 
 
 class Resource(ResourceAttributesMixin, object):

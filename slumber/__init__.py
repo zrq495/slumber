@@ -87,7 +87,8 @@ class Resource(ResourceAttributesMixin, object):
 
         return self._get_resource(**kwargs)
 
-    def _request(self, method, data=None, files=None, params=None):
+    def _request(self, method, data=None, files=None,
+                 params=None, timeout=None):
         serializer = self._store["serializer"]
         url = self.url()
 
@@ -100,7 +101,8 @@ class Resource(ResourceAttributesMixin, object):
 
         resp = self._store["session"].request(method, url, data=data,
                                               params=params, files=files,
-                                              headers=headers)
+                                              headers=headers,
+                                              timeout=timeout)
 
         # if 400 <= resp.status_code <= 499:
         #     exception_class = exceptions.HttpNotFoundError if resp.status_code == 404 else exceptions.HttpClientError
@@ -155,7 +157,9 @@ class Resource(ResourceAttributesMixin, object):
         return decoded
 
     def _do_verb_request(self, verb, data=None, files=None, params=None):
-        resp = self._request(verb, data=data, files=files, params=params)
+        timeout = params.pop('timeout', None)
+        resp = self._request(verb, data=data, files=files, params=params,
+                             timeout=timeout)
         return self._process_response(resp)
 
     def as_raw(self):
@@ -181,7 +185,8 @@ class Resource(ResourceAttributesMixin, object):
         return self._do_verb_request("PUT", data=data, files=files, params=kwargs)
 
     def delete(self, **kwargs):
-        resp = self._request("DELETE", params=kwargs)
+        timeout = kwargs.pop('timeout', None)
+        resp = self._request("DELETE", params=kwargs, timeout=timeout)
         if 200 <= resp.status_code <= 299:
             if resp.status_code == 204:
                 return True
@@ -204,7 +209,6 @@ class Resource(ResourceAttributesMixin, object):
 
 
 class API(ResourceAttributesMixin, object):
-
     resource_class = Resource
 
     def __init__(self, base_url=None, auth=None,

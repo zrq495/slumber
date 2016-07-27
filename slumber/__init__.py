@@ -87,7 +87,8 @@ class Resource(ResourceAttributesMixin, object):
 
         return self._get_resource(**kwargs)
 
-    def _request(self, method, data=None, files=None, params=None):
+    def _request(self, method, data=None, files=None,
+                 params=None, timeout=None):
         serializer = self._store["serializer"]
         url = self.url()
 
@@ -100,7 +101,8 @@ class Resource(ResourceAttributesMixin, object):
 
         resp = self._store["session"].request(method, url, data=data,
                                               params=params, files=files,
-                                              headers=headers)
+                                              headers=headers,
+                                              timeout=timeout)
 
         # if 400 <= resp.status_code <= 499:
         #     exception_class = exceptions.HttpNotFoundError if resp.status_code == 404 else exceptions.HttpClientError
@@ -160,31 +162,41 @@ class Resource(ResourceAttributesMixin, object):
 
     # TODO: refactor these methods - lots of commonality
     def get(self, **kwargs):
-        resp = self._request("GET", params=kwargs)
+        timeout = kwargs.pop('timeout', None)
+        resp = self._request("GET", params=kwargs, timeout=timeout)
         return self._process_response(resp)
 
     def options(self, **kwargs):
-        resp = self._request("OPTIONS", params=kwargs)
+        timeout = kwargs.pop('timeout', None)
+        resp = self._request("OPTIONS", params=kwargs, timeout=timeout)
         return self._process_response(resp)
 
     def head(self, **kwargs):
-        resp = self._request("HEAD", params=kwargs)
+        timeout = kwargs.pop('timeout', None)
+        resp = self._request("HEAD", params=kwargs, timeout=timeout)
         return self._process_response(resp)
 
     def post(self, data=None, files=None, **kwargs):
-        resp = self._request("POST", data=data, files=files, params=kwargs)
+        timeout = kwargs.pop('timeout', None)
+        resp = self._request("POST", data=data, files=files,
+                             params=kwargs, timeout=timeout)
         return self._process_response(resp)
 
     def patch(self, data=None, files=None, **kwargs):
-        resp = self._request("PATCH", data=data, files=files, params=kwargs)
+        timeout = kwargs.pop('timeout', None)
+        resp = self._request("PATCH", data=data, files=files,
+                             params=kwargs, timeout=timeout)
         return self._process_response(resp)
 
     def put(self, data=None, files=None, **kwargs):
-        resp = self._request("PUT", data=data, files=files, params=kwargs)
+        timeout = kwargs.pop('timeout', None)
+        resp = self._request("PUT", data=data, files=files,
+                             params=kwargs, timeout=timeout)
         return self._process_response(resp)
 
     def delete(self, **kwargs):
-        resp = self._request("DELETE", params=kwargs)
+        timeout = kwargs.pop('timeout', None)
+        resp = self._request("DELETE", params=kwargs, timeout=timeout)
         if 200 <= resp.status_code <= 299:
             if resp.status_code == 204:
                 return True
@@ -198,7 +210,6 @@ class Resource(ResourceAttributesMixin, object):
 
 
 class API(ResourceAttributesMixin, object):
-
     resource_class = Resource
 
     def __init__(self, base_url=None, auth=None, format=None,

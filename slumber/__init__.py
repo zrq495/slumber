@@ -1,3 +1,4 @@
+#! -*- coding: utf-8 -*-
 import requests
 
 # try:
@@ -104,11 +105,20 @@ class Resource(ResourceAttributesMixin, object):
                                               headers=headers,
                                               timeout=timeout)
 
-        # if 400 <= resp.status_code <= 499:
-        #     exception_class = exceptions.HttpNotFoundError if resp.status_code == 404 else exceptions.HttpClientError
-        #     raise exception_class("Client Error %s: %s" % (resp.status_code, url), response=resp, content=resp.content)
-        # if 500 <= resp.status_code <= 599:
-        #     raise exceptions.HttpServerError("Server Error %s: %s" % (resp.status_code, url), response=resp, content=resp.content)
+        exception = self._store["exception"]
+        if exception:
+            if 400 <= resp.status_code <= 499:
+                if resp.status_code == 404:
+                    exception_class = exceptions.HttpNotFoundError
+                else:
+                    exception_class = exceptions.HttpClientError
+                error_msg = "Client Error %s: %s" % (resp.status_code, url)
+                raise exception_class(error_msg, response=resp,
+                                      content=resp.content)
+            if 500 <= resp.status_code <= 599:
+                error_msg = "Server Error %s: %s" % (resp.status_code, url)
+                raise exceptions.HttpServerError(error_msg, response=resp,
+                                                 content=resp.content)
 
         self._ = resp
 
@@ -125,7 +135,8 @@ class Resource(ResourceAttributesMixin, object):
             return
 
         if resp.headers.get("content-type", None) and resp.content:
-            content_type = resp.headers.get("content-type").split(";")[0].strip()
+            content_type = resp.headers.get(
+                "content-type").split(";")[0].strip()
 
             try:
                 stype = s.get_serializer(content_type=content_type)
@@ -146,9 +157,10 @@ class Resource(ResourceAttributesMixin, object):
         if 200 <= resp.status_code <= 299:
             decoded = self._try_to_serialize_response(resp)
         elif 400 <= resp.status_code <= 499:
-            decoded =  self._try_to_serialize_response(resp)
+            decoded = self._try_to_serialize_response(resp)
         else:
-            # @@@ We should probably do some sort of error here? (Is this even possible?)
+            # @@@ We should probably do some sort of error here?
+            # @@@ (Is this even possible?)
             decoded = None
 
         if self._store["raw"]:
@@ -176,13 +188,16 @@ class Resource(ResourceAttributesMixin, object):
         return self._do_verb_request("HEAD", params=kwargs)
 
     def post(self, data=None, files=None, **kwargs):
-        return self._do_verb_request("POST", data=data, files=files, params=kwargs)
+        return self._do_verb_request("POST", data=data,
+                                     files=files, params=kwargs)
 
     def patch(self, data=None, files=None, **kwargs):
-        return self._do_verb_request("PATCH", data=data, files=files, params=kwargs)
+        return self._do_verb_request("PATCH", data=data,
+                                     files=files, params=kwargs)
 
     def put(self, data=None, files=None, **kwargs):
-        return self._do_verb_request("PUT", data=data, files=files, params=kwargs)
+        return self._do_verb_request("PUT", data=data,
+                                     files=files, params=kwargs)
 
     def delete(self, **kwargs):
         timeout = kwargs.pop('timeout', None)
@@ -203,17 +218,18 @@ class Resource(ResourceAttributesMixin, object):
 
         return url
 
-
     def _get_resource(self, **kwargs):
         return self.__class__(**kwargs)
 
 
 class API(ResourceAttributesMixin, object):
+
     resource_class = Resource
 
     def __init__(self, base_url=None, auth=None,
                  format=None, append_slash=True,
-                 session=None, serializer=None, raw=False):
+                 session=None, serializer=None,
+                 raw=False, exception=False):
         if serializer is None:
             serializer = Serializer(default=format)
 
@@ -230,6 +246,7 @@ class API(ResourceAttributesMixin, object):
             "session": session,
             "serializer": serializer,
             "raw": raw,
+            "exception": exception,
         }
 
         # Do some Checks for Required Values

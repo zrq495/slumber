@@ -39,6 +39,7 @@ class ResourceTestCase(unittest.TestCase):
             data=None,
             files=None,
             params=None,
+            cert=None,
             headers={"accept": self.base_resource._store["serializer"].get_content_type()}
         )
 
@@ -68,6 +69,7 @@ class ResourceTestCase(unittest.TestCase):
             data=None,
             files=None,
             params=None,
+            cert=None,
             headers={"accept": self.base_resource._store["serializer"].get_content_type()}
         )
 
@@ -97,6 +99,7 @@ class ResourceTestCase(unittest.TestCase):
             data=None,
             files=None,
             params=None,
+            cert=None,
             headers={"accept": self.base_resource._store["serializer"].get_content_type()}
         )
 
@@ -129,6 +132,7 @@ class ResourceTestCase(unittest.TestCase):
             data=None,
             files=None,
             params=None,
+            cert=None,
             headers={"accept": self.base_resource._store["serializer"].get_content_type()}
         )
 
@@ -163,6 +167,7 @@ class ResourceTestCase(unittest.TestCase):
             data=None,
             files=None,
             params=None,
+            cert=None,
             headers={"accept": self.base_resource._store["serializer"].get_content_type()}
         )
 
@@ -192,6 +197,7 @@ class ResourceTestCase(unittest.TestCase):
             data=None,
             files=None,
             params=None,
+            cert=None,
             headers={"accept": self.base_resource._store["serializer"].get_content_type()}
         )
 
@@ -226,6 +232,7 @@ class ResourceTestCase(unittest.TestCase):
             data=None,
             files=None,
             params=None,
+            cert=None,
             headers={"accept": self.base_resource._store["serializer"].get_content_type()}
         )
 
@@ -255,6 +262,7 @@ class ResourceTestCase(unittest.TestCase):
             data=None,
             files=None,
             params=None,
+            cert=None,
             headers={"accept": self.base_resource._store["serializer"].get_content_type()}
         )
 
@@ -289,6 +297,7 @@ class ResourceTestCase(unittest.TestCase):
             data=None,
             files=None,
             params=None,
+            cert=None,
             headers={"accept": self.base_resource._store["serializer"].get_content_type()}
         )
 
@@ -318,6 +327,7 @@ class ResourceTestCase(unittest.TestCase):
             data=None,
             files=None,
             params=None,
+            cert=None,
             headers={"accept": self.base_resource._store["serializer"].get_content_type()}
         )
 
@@ -377,6 +387,7 @@ class ResourceTestCase(unittest.TestCase):
             data=None,
             files=None,
             params=None,
+            cert=None,
             headers={"accept": self.base_resource._store["serializer"].get_content_type()}
         )
 
@@ -620,6 +631,7 @@ class ResourceTestCase(unittest.TestCase):
             data=None,
             files=None,
             params=None,
+            cert=None,
             headers={"accept": self.base_resource._store["serializer"].get_content_type()}
         )
 

@@ -1,11 +1,6 @@
 #! -*- coding: utf-8 -*-
 import requests
 
-# try:
-#     from urllib.parse import urlparse, urlsplit, urlunsplit
-# except ImportError:
-#     from urlparse import urlparse, urlsplit, urlunsplit
-
 from . import exceptions
 from .serialize import Serializer
 from .utils import url_join, copy_kwargs
@@ -91,9 +86,11 @@ class Resource(ResourceAttributesMixin, object):
     def _request(self, method, data=None, files=None,
                  params=None, timeout=None):
         serializer = self._store["serializer"]
+        cert = self._store.get("cert", None)
+        headers = self._store.get("headers") or {}
         url = self.url()
 
-        headers = {"accept": serializer.get_content_type()}
+        headers["accept"] = serializer.get_content_type()
 
         if not files:
             if data is not None:
@@ -102,7 +99,7 @@ class Resource(ResourceAttributesMixin, object):
 
         resp = self._store["session"].request(method, url, data=data,
                                               params=params, files=files,
-                                              headers=headers,
+                                              headers=headers, cert=cert,
                                               timeout=timeout)
 
         exception = self._store["exception"]
@@ -227,6 +224,7 @@ class API(ResourceAttributesMixin, object):
     resource_class = Resource
 
     def __init__(self, base_url=None, auth=None,
+                 headers=None, cert=None,
                  format=None, append_slash=True,
                  session=None, serializer=None,
                  raw=False, exception=False):
@@ -247,6 +245,8 @@ class API(ResourceAttributesMixin, object):
             "serializer": serializer,
             "raw": raw,
             "exception": exception,
+            "headers": headers,
+            "cert": cert,
         }
 
         # Do some Checks for Required Values

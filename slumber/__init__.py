@@ -144,13 +144,7 @@ class Resource(ResourceAttributesMixin, object):
 
     def _process_response(self, resp):
         # TODO: something to expose headers and status
-
-        if 200 <= resp.status_code <= 299:
-            return self._try_to_serialize_response(resp)
-        elif 400 <= resp.status_code <= 499:
-            return self._try_to_serialize_response(resp)
-        else:
-            return  # @@@ We should probably do some sort of error here?
+        return self._try_to_serialize_response(resp)
 
     def url(self):
         url = self._store["base_url"]

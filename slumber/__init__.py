@@ -88,7 +88,7 @@ class Resource(ResourceAttributesMixin, object):
         return self._get_resource(**kwargs)
 
     def _request(self, method, data=None, files=None,
-                 params=None, timeout=None):
+                 params=None, timeout=5):
         serializer = self._store["serializer"]
         url = self.url()
 
